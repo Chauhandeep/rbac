@@ -6,7 +6,7 @@ from settings import DATABASE_CONNECTION
 
 
 class Model(ABC):
-    def __init__(self, data: Dict, id_: int = None):
+    def __init__(self, id_: int = None):
         self.id = id_
 
     def serialize(self):
