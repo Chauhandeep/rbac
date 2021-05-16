@@ -3,7 +3,7 @@ from typing import Dict
 import stringcase
 
 from db.backend import DatabaseBackend
-from exceptions import ObjectDoesNotExist, RelationDoesNotExist
+from exceptions import ObjectDoesNotExist, RelationDoesNotExist, IntegrityError
 
 
 class MemoryDatabase(DatabaseBackend):
@@ -15,63 +15,59 @@ class MemoryDatabase(DatabaseBackend):
         return stringcase.snakecase(model)
 
     def insert(self, model: str, record: Dict):
-        """
-        Inserts a record into the table
-        :param model: model name
-        :param record: row to be inserted
-        :return: None
-        """
-
         table_name = self.get_table_name_from_model(model)
 
         if table_name not in self.data.keys():
             self.data[table_name] = list()
 
-        index = record.get('id', len(self.data[model]) + 1)
+        id_ = record.get('id', len(self.data[table_name]) + 1) or len(self.data[table_name]) + 1
 
-        record['id'] = index
-        self.data[model].append(record)
+        existing_row = None
+
+        if id_ <= len(self.data[table_name]):
+            existing_row = next((row for row in self.data[table_name] if row['id'] == id_), None)
+
+        if existing_row:
+            raise IntegrityError(
+                message=f'Row with id ({id_}) exists in table {table_name}'
+            )
+
+        record['id'] = id_
+        self.data[table_name].append(record)
+
+        return record
 
     def delete(self, model: str, id_: int):
-        """
-        Deletes a record from a table
-        :param model: model name
-        :param id_: id of the record to be deleted
-        :return: None
-        """
-
         try:
             table_name = self.get_table_name_from_model(model)
 
             index = -1
 
-            for i in range(0, len(self.data[model])):
-                if self.data[model][i]['id'] == id_:
+            for i in range(0, len(self.data[table_name])):
+                if self.data[table_name][i]['id'] == id_:
                     index = i
 
             if index == -1:
                 raise ObjectDoesNotExist()
 
-            self.data[model].pop(index)
+            print(f'Deleting index {index}')
+            self.data[table_name].pop(index)
         except KeyError:
             raise RelationDoesNotExist(
                 message=f'Relation {table_name} does not exists in the database'
             )
 
     def update(self, model: str, id_: int, record: Dict):
-        """
-        Updates a record in a table
-        :param model: model name
-        :param id_: id of thr row to be deleted
-        :param record: new data to be updated
-        :return: None
-        """
-
         self.delete(model, id_)
-
-        record['id'] = id_
 
         self.insert(model, record)
 
-    def get_data(self):
-        return self.data
+        return record
+
+    def get(self, model: str):
+        table_name = self.get_table_name_from_model(model)
+
+        if table_name not in self.data.keys():
+            self.data[table_name] = list()
+
+        return self.data[table_name]

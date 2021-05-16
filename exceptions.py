@@ -21,3 +21,10 @@ class RelationDoesNotExist(CustomException):
         super(RelationDoesNotExist, self).__init__(
             message=message
         )
+
+
+class IntegrityError(CustomException):
+    def __init__(self, message):
+        super(IntegrityError, self).__init__(
+            message=message
+        )

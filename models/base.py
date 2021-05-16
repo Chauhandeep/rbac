@@ -1,35 +1,83 @@
 from abc import ABC
 from typing import Dict
-from db import MemoryDatabase
+
+from settings import DATABASE_CONNECTION
 
 
 class Model(ABC):
-    def __init__(self):
-        self.database_connection = MemoryDatabase()
+    def __init__(self, id_: int = None):
+        self.id = id_
 
-    def save(self, record: Dict):
+    def serialize(self):
+        """
+        Method to serialize instance into database record
+        :return: Dict
+        """
+        data = {}
+
+        for k, v in self.__dict__.items():
+            if not k.startswith('__'):
+                data[k] = v
+
+        return data
+
+    @classmethod
+    def deserialize(cls, row: Dict):
+        """
+        Method to deserialize database record into instance
+        :return: Model Object
+        """
+        return cls(row)
+
+    def save(self):
         """
         Saves an object to the database
-        :param record: Row to be inserted
         :return: None
         """
-        self.database_connection.insert(self.__class__.__name__, record)
+        data = self.serialize()
+        saved_data = DATABASE_CONNECTION.insert(self.__class__.__name__, data)
 
-    def update(self, old_instance, new_record: Dict):
+        self.__dict__.update(saved_data)
+
+    def update(self):
         """
         Updates an existing object in the database
-        :param old_instance: old instance to be updated
-        :param new_record: new record to be inserted
         :return: None
         """
-        new_record['id'] = old_instance.id
+        data = self.serialize()
 
-        self.database_connection.update(self.__class__.__name__, old_instance.id, new_record)
+        saved_data = DATABASE_CONNECTION.update(self.__class__.__name__, data['id'], data)
 
-    def delete(self, instance):
+        self.__dict__.update(saved_data)
+
+    def delete(self):
         """
         Deletes an object from the database
-        :param instance: Instance to be deleted
         :return: None
         """
-        self.database_connection.delete(self.__class__.__name__, instance.id)
+        DATABASE_CONNECTION.delete(self.__class__.__name__, self.id)
+
+    @classmethod
+    def get(cls, filters: Dict = None):
+        """
+        Function to return all users based on a filter
+        :param filters: Dict
+        :return: User
+        """
+        if filters is None:
+            filters = {}
+
+        data = DATABASE_CONNECTION.get(cls.__name__)
+
+        for k, v in filters.items():
+            data = [row for row in data if row[k] in v]
+
+        res = [cls.deserialize(row) for row in data]
+
+        return res
+
+    def __str__(self):
+        return f'{self.__class__.__name__}({self.id})'
+
+    def __repr__(self):
+        return self.__str__()

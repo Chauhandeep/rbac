@@ -35,3 +35,11 @@ class DatabaseBackend(DatabaseSingleton, ABC):
         :return: None
         """
         pass
+
+    @abstractmethod
+    def get(self, model: str):
+        """
+        Function to get all the table rows
+        :param model: model name
+        :return: List[Dict]
+        """
