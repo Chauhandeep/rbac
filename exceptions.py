@@ -28,3 +28,10 @@ class IntegrityError(CustomException):
         super(IntegrityError, self).__init__(
             message=message
         )
+
+
+class ValidationError(CustomException):
+    def __init__(self, message):
+        super(ValidationError, self).__init__(
+            message=message
+        )
