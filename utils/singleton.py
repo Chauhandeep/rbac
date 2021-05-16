@@ -1,4 +1,4 @@
-class Singleton(object):
+class DatabaseSingleton(object):
     _instance = None
     
     def __new__(cls, *args, **kwargs):
