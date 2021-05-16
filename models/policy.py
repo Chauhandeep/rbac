@@ -1,6 +1,7 @@
 from typing import Dict
 
 from exceptions import ValidationError
+from models import Resource
 from models.actions import ActionTypes
 from models.base import Model
 
@@ -22,6 +23,7 @@ class Policy(Model):
 
         effect = data.get('effect')
         action = data.get('action')
+        resource = data.get('resource')
 
         if effect not in ['allow', 'deny']:
             raise ValidationError(
@@ -32,3 +34,14 @@ class Policy(Model):
             raise ValidationError(
                 message=f'unsupported action "{action}"'
             )
+
+        if resource != '*':
+            resource_obj = next(
+                (resource for resource in Resource.get(filters={'name': [resource]})),
+                None
+            )
+
+            if not resource_obj:
+                raise ValidationError(
+                    message=f'Resource Not Found "{resource}"'
+                )
