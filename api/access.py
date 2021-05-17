@@ -7,7 +7,7 @@ from api.login import UserLogin
 
 class AccessControl:
     @staticmethod
-    def check(action: ActionTypes, resource: Resource):
+    def check(action: int, resource: Resource):
         """
         Function to check the user access for a particular action on resource
         :return: bool

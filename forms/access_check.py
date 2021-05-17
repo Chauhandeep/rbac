@@ -28,27 +28,30 @@ class AccessCheckForm(Form):
         super(AccessCheckForm, self).render()
 
     def validate(self, data):
-        action = data['action']
-        resource = data['resource']
+        try:
+            action = data['action']
+            resource = data['resource']
 
-        if int(action) not in [action.value for action in ActionTypes]:
-            raise ValidationError(
-                message='Invalid action type'
-            )
+            if int(action) not in [action.value for action in ActionTypes]:
+                raise ValidationError(
+                    message='Invalid action type'
+                )
 
-        resources = Resource.get(filters={
-            'name': [resource]
-        })
+            resources = Resource.get(filters={
+                'name': [resource]
+            })
 
-        if len(resources) == 0:
-            raise ValidationError(
-                message=f'Resource {resource} not found'
-            )
+            if len(resources) == 0:
+                raise ValidationError(
+                    message=f'Resource {resource} not found'
+                )
+        except ValueError as err:
+            raise ValidationError(message=f'Invalid Input - {str(err)}')
 
     def save(self, data: Dict):
         self.validate(data)
 
-        if AccessControl.check(data['action'], data['resource']):
+        if AccessControl.check(int(data['action']), data['resource']):
             print("[+] Access Granted!!")
         else:
             print("[-] Access Denied")

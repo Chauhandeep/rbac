@@ -18,6 +18,9 @@ class PolicyForm(Form):
 
     def save(self, data: Dict):
         try:
+            action = data['action']
+            data['action'] = int(action) if '1' <= action <= '6' else action
+
             policy = Policy(data)
             policy.save()
         except ValueError as err:
@@ -38,7 +41,7 @@ class PolicyForm(Form):
             {
                 'name': 'action',
                 'type': 'string',
-                'supporting_text': 'Enter 1=>GET, 2=>WRITE, 2=>DELETE, 4=>PUT, 5=>PATCH, 6=>HEAD, ALL=>*'
+                'supporting_text': 'Enter 1=>GET, 2=>WRITE, 3=>DELETE, 4=>PUT, 5=>PATCH, 6=>HEAD, ALL=>*'
             },
             {
                 'name': 'resource',

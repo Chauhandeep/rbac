@@ -30,7 +30,7 @@ class Policy(Model):
                 message=f'unsupported effect "{effect}"'
             )
 
-        if action not in [action.value for action in ActionTypes]:
+        if action != '*' and int(action) not in [action.value for action in ActionTypes]:
             raise ValidationError(
                 message=f'unsupported action "{action}"'
             )

@@ -40,3 +40,9 @@ class User(Model):
                 message=f'Failed to add roles to the user.\n'
                         f'Few role id seems to be invalid.'
             )
+        
+    def __str__(self):
+        data = self.__dict__
+        
+        data.pop('password')
+        return super(User, self).__str__()
