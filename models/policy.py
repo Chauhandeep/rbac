@@ -1,7 +1,7 @@
 from typing import Dict
 
 from exceptions import ValidationError
-from models import Resource
+from models.resource import Resource
 from models.actions import ActionTypes
 from models.base import Model
 

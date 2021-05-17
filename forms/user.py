@@ -1,3 +1,5 @@
+from typing import Dict
+
 from forms.base import Form
 from models import User
 
@@ -7,6 +9,16 @@ class UserForm(Form):
         super(UserForm, self).__init__(
             model=User
         )
+
+    def show_banner(self):
+        print('########################################')
+        print('           USER REGISTRATION            ')
+        print('########################################')
+        print('\n\n')
+
+    def save(self, data: Dict):
+        user = User(data)
+        user.save()
 
     def get_fields(self):
         return [
@@ -21,5 +33,10 @@ class UserForm(Form):
             {
                 'name': 'full_name',
                 'type': 'string'
+            },
+            {
+                'name': 'roles',
+                'type': 'list',
+                'supporting_text': 'Enter role ids to be added'
             }
         ]

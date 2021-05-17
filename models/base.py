@@ -65,6 +65,10 @@ class Model(ABC):
         DATABASE_CONNECTION.delete(self.__class__.__name__, self.id)
 
     @classmethod
+    def display(cls, filters: Dict = None):
+        print(cls.get(filters=filters))
+
+    @classmethod
     def get(cls, filters: Dict = None):
         """
         Function to return all users based on a filter

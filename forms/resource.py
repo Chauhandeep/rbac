@@ -1,3 +1,5 @@
+from typing import Dict
+
 from forms.base import Form
 from models import Resource
 
@@ -7,6 +9,16 @@ class ResourceForm(Form):
         super(ResourceForm, self).__init__(
             model=Resource
         )
+
+    def show_banner(self):
+        print('########################################')
+        print('         RESOURCE REGISTRATION          ')
+        print('########################################')
+        print('\n\n')
+
+    def save(self, data: Dict):
+        resource = Resource(data)
+        resource.save()
 
     def get_fields(self):
         return [

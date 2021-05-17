@@ -1,7 +1,7 @@
 from typing import Dict
 
 from exceptions import ValidationError
-from models import Policy
+from models.policy import Policy
 from models.base import Model
 
 
@@ -12,7 +12,7 @@ class Role(Model):
         )
 
         self.name = data['name']
-        self.policies = data['policies']
+        self.policies = [int(id_) for id_ in data['policies']]
 
     def validate(self, data: Dict):
         super(Role, self).validate(data)

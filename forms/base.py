@@ -1,5 +1,6 @@
 import json
 from abc import abstractmethod
+from typing import Dict
 
 import stringcase
 
@@ -15,11 +16,18 @@ class Form:
         self.model = model
 
     @abstractmethod
+    def show_banner(self):
+        pass
+
+    @abstractmethod
     def get_fields(self):
         """
         Returns a list of fields required in the form
         :return: List
         """
+
+    def save(self, data: Dict):
+        pass
 
     def pre_save(self):
         pass
@@ -34,6 +42,7 @@ class Form:
         :return: Dict
         """
         clear()
+        self.show_banner()
 
         fields = self.get_fields()
 
@@ -42,10 +51,14 @@ class Form:
         for field in fields:
             if field['type'] == 'list':
                 print(f'Enter {self.BOLD_COLOR}{stringcase.pascalcase(field["name"])}{self.COLOR_END}')
+                if field.get('supporting_text'):
+                    print(f'({field["supporting_text"]})')
                 data[field['name']] = input_list()
             else:
-                data[field['name']] = input(f'Enter {self.BOLD_COLOR}'
-                                            f'{stringcase.pascalcase(field["name"])}{self.COLOR_END}')
+                print(f'Enter {self.BOLD_COLOR}{stringcase.pascalcase(field["name"])}{self.COLOR_END}')
+                if field.get('supporting_text'):
+                    print(f'({field["supporting_text"]})')
+                data[field['name']] = input()
 
         print('\nDetails Entered: ')
 
@@ -54,3 +67,7 @@ class Form:
         print('\n')
 
         prompt_enter()
+
+        self.pre_save()
+        self.save(data)
+        self.post_save()

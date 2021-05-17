@@ -1,7 +1,7 @@
 from typing import Dict
 
 from exceptions import ValidationError
-from models import Role
+from models.role import Role
 from models.base import Model
 
 
@@ -15,7 +15,7 @@ class User(Model):
         self.password = details['password']
         self.full_name = details['full_name']
 
-        self.roles = details['roles']
+        self.roles = [int(id_) for id_ in details['roles']]
 
     def validate(self, data: Dict):
         super(User, self).validate(data)
