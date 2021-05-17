@@ -1,5 +1,6 @@
 from typing import Dict
 
+from exceptions import ValidationError
 from forms.base import Form
 from models import Policy, User
 
@@ -7,6 +8,7 @@ from models import Policy, User
 class PolicyForm(Form):
     def __init__(self):
         super(PolicyForm, self).__init__()
+        self.only_admin = True
 
     def show_banner(self):
         print('########################################')
@@ -15,8 +17,13 @@ class PolicyForm(Form):
         print('\n\n')
 
     def save(self, data: Dict):
-        policy = Policy(data)
-        policy.save()
+        try:
+            policy = Policy(data)
+            policy.save()
+        except ValueError as err:
+            raise ValidationError(
+                message=str(err)
+            )
 
     def get_fields(self):
         return [

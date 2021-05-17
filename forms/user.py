@@ -1,5 +1,6 @@
 from typing import Dict
 
+from exceptions import ValidationError
 from forms.base import Form
 from models import User
 
@@ -8,6 +9,8 @@ class UserForm(Form):
     def __init__(self):
         super(UserForm, self).__init__()
 
+        self.only_admin = True
+
     def show_banner(self):
         print('########################################')
         print('           USER REGISTRATION            ')
@@ -15,8 +18,15 @@ class UserForm(Form):
         print('\n\n')
 
     def save(self, data: Dict):
-        user = User(data)
-        user.save()
+        self.validate(data)
+
+        try:
+            user = User(data)
+            user.save()
+        except ValueError as err:
+            raise ValidationError(
+                message=str(err)
+            )
 
     def get_fields(self):
         return [

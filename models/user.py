@@ -20,6 +20,17 @@ class User(Model):
     def validate(self, data: Dict):
         super(User, self).validate(data)
 
+        username = data['username']
+
+        obj = User.get(filters={
+            'username': [username]
+        })
+
+        if len(obj) > 0:
+            raise ValidationError(
+                message=f'user with username {username} already exists!'
+            )
+
         roles = data.get('roles')
 
         role_objs = Role.get(filters={'id': roles})

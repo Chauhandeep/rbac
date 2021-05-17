@@ -4,6 +4,8 @@ from typing import Dict
 
 import stringcase
 
+from api import UserLogin
+from exceptions import ValidationError
 from models.base import Model
 from utils import prompt_enter, clear, input_list
 
@@ -23,6 +25,14 @@ class Form:
         :return: List
         """
 
+    def validate(self, data):
+        logged_in_user = UserLogin.check_session()
+
+        if not logged_in_user:
+            raise ValidationError(
+                message='Please login first.'
+            )
+
     def save(self, data: Dict):
         pass
 
@@ -40,6 +50,11 @@ class Form:
         """
         clear()
         self.show_banner()
+
+        admin_check = getattr(self, 'only_admin', None)
+
+        if admin_check:
+            UserLogin.admin_check()
 
         fields = self.get_fields()
 

@@ -1,4 +1,4 @@
-from exceptions import UserNotLoggedIn
+from exceptions import UserNotLoggedIn, ValidationError
 from models import User, Session
 
 
@@ -50,3 +50,22 @@ class UserLogin:
         session.delete()
 
         print(f'{session.username} Logged out.')
+
+    @staticmethod
+    def admin_check():
+        session = UserLogin.check_session()
+
+        if session is None:
+            raise ValidationError(
+                message='Please log in first.'
+            )
+
+        logged_in_user = User.get(
+            filters={
+                'username': UserLogin.check_session().username
+            })[0]
+
+        if logged_in_user.username != 'admin':
+            raise ValidationError(
+                message='Access Forbidden. You need to be an administrator to use this functionality.'
+            )

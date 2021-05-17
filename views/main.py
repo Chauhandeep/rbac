@@ -1,4 +1,5 @@
 from api import UserLogin
+from forms.access_check import AccessCheckForm
 from models import User, Resource, Policy, Role
 from views.base import View
 from forms import *
@@ -14,6 +15,11 @@ class MainView(View):
         self.add_choice(
             text='Logout',
             trigger=UserLogin.logout
+        )
+
+        self.add_choice(
+            text='Check Access',
+            trigger=AccessCheckForm().render
         )
 
         self.add_choice(

@@ -1,16 +1,24 @@
+from exceptions import ValidationError
 from models import User, Resource, Role, Policy
 from models.actions import ActionTypes
+
+from api.login import UserLogin
 
 
 class AccessControl:
     @staticmethod
-    def check(user: User, action: ActionTypes, resource: Resource):
+    def check(action: ActionTypes, resource: Resource):
         """
         Function to check the user access for a particular action on resource
         :return: bool
         """
+        logged_in_user = User.get(
+            filters={
+                'username': UserLogin.check_session().username
+            })[0]
+
         user_roles = Role.get(filters={
-            'id': user.roles
+            'id': logged_in_user.roles
         })
 
         policies = []
