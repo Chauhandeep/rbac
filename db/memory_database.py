@@ -50,7 +50,6 @@ class MemoryDatabase(DatabaseBackend):
             if index == -1:
                 raise ObjectDoesNotExist()
 
-            print(f'Deleting index {index}')
             self.data[table_name].pop(index)
         except KeyError:
             raise RelationDoesNotExist(

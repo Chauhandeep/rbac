@@ -35,3 +35,12 @@ class ValidationError(CustomException):
         super(ValidationError, self).__init__(
             message=message
         )
+
+
+class UserNotLoggedIn(CustomException):
+    def __init__(self, message=None):
+        if message is None:
+            message = 'User Not Logged In'
+        super(UserNotLoggedIn, self).__init__(
+            message=message
+        )
