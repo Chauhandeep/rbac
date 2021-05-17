@@ -6,9 +6,7 @@ from models import Policy, User
 
 class PolicyForm(Form):
     def __init__(self):
-        super(PolicyForm, self).__init__(
-            model=Policy
-        )
+        super(PolicyForm, self).__init__()
 
     def show_banner(self):
         print('########################################')

@@ -6,9 +6,7 @@ from models import User
 
 class UserForm(Form):
     def __init__(self):
-        super(UserForm, self).__init__(
-            model=User
-        )
+        super(UserForm, self).__init__()
 
     def show_banner(self):
         print('########################################')

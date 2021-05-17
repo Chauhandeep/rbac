@@ -6,9 +6,7 @@ from models import Role
 
 class RoleForm(Form):
     def __init__(self):
-        super(RoleForm, self).__init__(
-            model=Role
-        )
+        super(RoleForm, self).__init__()
 
     def show_banner(self):
         print('########################################')

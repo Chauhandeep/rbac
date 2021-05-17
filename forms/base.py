@@ -12,9 +12,6 @@ class Form:
     BOLD_COLOR = '\033[1m'
     COLOR_END = '\033[0m'
 
-    def __init__(self, model: Model):
-        self.model = model
-
     @abstractmethod
     def show_banner(self):
         pass

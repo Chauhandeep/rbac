@@ -1,4 +1,9 @@
-from db import MemoryDatabase
+import db
 
 
-DATABASE_CONNECTION = MemoryDatabase()
+DATABASE_BACKEND = db.MemoryDatabase
+
+# For Redis Backend
+# DATABASE_BACKEND = db.RedisDatabase
+
+DATABASE_CONNECTION = DATABASE_BACKEND()

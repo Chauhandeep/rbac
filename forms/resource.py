@@ -6,9 +6,7 @@ from models import Resource
 
 class ResourceForm(Form):
     def __init__(self):
-        super(ResourceForm, self).__init__(
-            model=Resource
-        )
+        super(ResourceForm, self).__init__()
 
     def show_banner(self):
         print('########################################')

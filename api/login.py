@@ -29,6 +29,8 @@ class UserLogin:
         user = users[0]
         UserLogin.save_session(user)
 
+        return True
+
     @staticmethod
     def save_session(user: User):
         session = Session(
@@ -46,3 +48,5 @@ class UserLogin:
 
         session = session[0]
         session.delete()
+
+        print(f'{session.username} Logged out.')
